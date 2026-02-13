@@ -1,0 +1,45 @@
+{% extends "restaurant/base.html" %}
+
+{% block content %}
+  <h2>Order confirmation</h2>
+  <p>Your order has been received. Thank you!</p>
+{% endblock %}
+
+from django.shortcuts import render
+from datetime import datetime, timedelta
+import random
+
+def confirmation(request):
+    if request.method == "POST":
+        items_selected = request.POST.getlist('items')
+        instructions = request.POST.get('instructions', '')
+        customer_name = request.POST.get('customer_name')
+        customer_phone = request.POST.get('customer_phone')
+        customer_email = request.POST.get('customer_email')
+        
+        # Parse items and prices
+        order_items = []
+        total_price = 0
+        for item in items_selected:
+            name, price = item.split("|")
+            price = float(price)
+            order_items.append({"name": name, "price": price})
+            total_price += price
+        
+        # Calculate ready time (30-60 min from now)
+        ready_minutes = random.randint(30, 60)
+        ready_time = datetime.now() + timedelta(minutes=ready_minutes)
+        
+        context = {
+            "order_items": order_items,
+            "total_price": total_price,
+            "instructions": instructions,
+            "customer_name": customer_name,
+            "customer_phone": customer_phone,
+            "customer_email": customer_email,
+            "ready_time": ready_time.strftime("%I:%M %p")
+        }
+        return render(request, 'restaurant/confirmation.html', context)
+    else:
+        # If someone visits the confirmation URL directly, redirect to order page
+        return redirect('order')

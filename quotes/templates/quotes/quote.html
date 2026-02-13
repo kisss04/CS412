@@ -1,0 +1,10 @@
+{% extends "quotes/base.html" %}
+
+{% block content %}
+    <h2>Random quote</h2>
+    <p style="font-size: 1.4rem; font-weight: 600; margin-top: 1rem;">
+        “{{ quote }}”
+    </p>
+    <img src="{{ image }}" alt="SpongeBob quote image" />
+{% endblock %}
+

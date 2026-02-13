@@ -1,0 +1,27 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+
+<h2>MiniInsta: @{{ profile.username }}</h2>
+
+<img src="{{ profile.profile_image_url }}" alt="{{ profile.display_name }}" width="300">
+
+<h3>{{ profile.display_name }}</h3>
+
+<div style="margin-top: 10px;">
+    <strong>TBD</strong> posts &nbsp;&nbsp;
+    <strong>TBD</strong> followers &nbsp;&nbsp;
+    <strong>TBD</strong> following
+</div>
+
+<div style="margin-top: 15px; white-space: pre-line;">
+    {{ profile.bio_text }}
+</div>
+
+<h3>Posts</h3>
+<p>No Posts</p>
+
+{% endblock %}
+
+
+

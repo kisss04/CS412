@@ -1,0 +1,38 @@
+{% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Place an Order</h1>
+
+<form method="POST" action="{% url 'confirmation' %}">
+    {% csrf_token %}
+    
+    <h3>Select your Items:</h3>
+    <input type="checkbox" name="items" value="Regular Felafel|4" id="item1">
+    <label for="item1">Regular Felafel $4</label><br>
+    
+    <input type="checkbox" name="items" value="Big Felafel|5" id="item2">
+    <label for="item2">Big Felafel $5</label><br>
+    
+    <input type="checkbox" name="items" value="Very Big Felafel|6" id="item3">
+    <label for="item3">Very Big Felafel $6</label><br>
+    
+    <input type="checkbox" name="items" value="Chips|2" id="item4">
+    <label for="item4">Chips $2</label><br>
+    
+    <h3>Today's Special:</h3>
+    <input type="checkbox" name="items" value="{{ daily_special.name }}|{{ daily_special.price }}" id="special">
+    <label for="special">{{ daily_special.name }} ${{ daily_special.price }}</label><br>
+    <p>{{ daily_special.description }}</p>
+    
+    <h3>Special Instructions</h3>
+    <textarea name="instructions" rows="3" cols="40" placeholder="Please share any special instructions"></textarea>
+    
+    <h3>Customer Information</h3>
+    <label>Name: <input type="text" name="customer_name" required></label><br>
+    <label>Phone: <input type="text" name="customer_phone" required></label><br>
+    <label>Email: <input type="email" name="customer_email" required></label><br><br>
+    
+    <input type="submit" value="Place Order">
+</form>
+{% endblock %}

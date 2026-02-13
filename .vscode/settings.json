@@ -1,0 +1,7 @@
+{
+  "python.defaultInterpreterPath": "/Applications/anaconda3/bin/python3.12",
+  "python.analysis.extraPaths": [
+    "/Applications/anaconda3/lib/python3.12/site-packages"
+  ],
+  "python.analysis.typeCheckingMode": "basic"
+}

@@ -1,0 +1,25 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>All Profiles</h2>
+
+<table border="1">
+    <tr>
+        <th>Image</th>
+        <th>Username</th>
+        <th>Display Name</th>
+    </tr>
+
+    {% for profile in profiles %}
+    <tr>
+        <td>
+            <a href="{% url 'show_profile' profile.pk %}">
+                <img src="{{ profile.profile_image_url }}" width="100">
+            </a>
+        </td>
+        <td>{{ profile.username }}</td>
+        <td>{{ profile.display_name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
