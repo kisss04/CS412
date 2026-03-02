@@ -1,0 +1,35 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Add Post for @{{ profile.username }}</h2>
+
+<p>
+  <a href="{% url 'mini_insta:show_profile' profile.pk %}">← Back to Profile</a> |
+  <a href="{% url 'mini_insta:profile_list' %}">Home</a>
+</p>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <p>
+    <label>Upload Image(s):<br>
+      <input type="file" name="files" multiple>
+    </label>
+  </p>
+
+  <p>
+    <label>OR Image URL:<br>
+      <input type="url" name="image_url" style="width:100%;">
+    </label>
+  </p>
+
+  <p>
+    <label>Caption (optional):<br>
+      <textarea name="caption" rows="3" style="width:100%;"></textarea>
+    </label>
+  </p>
+
+  <button type="submit">Create post</button>
+  <a href="{% url 'mini_insta:show_profile' profile.pk %}">Cancel</a>
+</form>
+{% endblock %}

@@ -9,7 +9,7 @@
 <h3>{{ profile.display_name }}</h3>
 
 <div style="margin-top: 10px;">
-    <strong>TBD</strong> posts &nbsp;&nbsp;
+    <strong>{{ profile.get_all_posts.count }} posts</strong> &nbsp;&nbsp;
     <strong>TBD</strong> followers &nbsp;&nbsp;
     <strong>TBD</strong> following
 </div>
@@ -18,10 +18,47 @@
     {{ profile.bio_text }}
 </div>
 
+<p style="margin-top: 1rem;">
+  <a href="{% url 'mini_insta:edit_profile' profile.pk %}">Edit profile</a> |
+  <a href="{% url 'mini_insta:add_post' profile.pk %}">+ Add post</a> |
+  <a href="{% url 'mini_insta:profile_list' %}">← Back to All Profiles</a>
+</p>
+
 <h3>Posts</h3>
-<p>No Posts</p>
+{% with posts=profile.get_all_posts %}
+  {% if posts %}
+    <ul>
+      {% for post in posts %}
+        <li style="margin: 1rem 0; list-style: none; border-bottom: 1px solid #ccc; padding-bottom: 1rem;">
+          <strong>{{ post.timestamp }}</strong><br>
+
+          {% for photo in post.get_all_photos %}
+            {% if photo.image_file %}
+              <img src="{{ photo.image_file.url }}" alt="Post image" width="150">
+            {% else %}
+              <img src="{{ photo.image_url }}" alt="Post image" width="150">
+            {% endif %}
+          {% endfor %}
+
+          {% if post.caption %}
+            <div style="margin-top: 0.5rem;">{{ post.caption }}</div>
+          {% endif %}
+
+          <div style="margin-top: 0.5rem;">
+            <a href="{% url 'mini_insta:edit_post' post.pk %}">Edit</a> |
+            <form action="{% url 'mini_insta:delete_post' post.pk %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" style="background:none;border:none;color:#b91c1c;cursor:pointer;">
+                Delete
+              </button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No posts yet.</p>
+  {% endif %}
+{% endwith %}
 
 {% endblock %}
-
-
-

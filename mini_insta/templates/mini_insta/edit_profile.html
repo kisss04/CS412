@@ -1,0 +1,30 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+  <h2>Edit profile for @{{ profile.username }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <p>
+      <label>Display name:<br>
+        <input type="text" name="display_name" value="{{ profile.display_name }}" style="width: 100%;">
+      </label>
+    </p>
+
+    <p>
+      <label>Profile image URL:<br>
+        <input type="url" name="profile_image_url" value="{{ profile.profile_image_url }}" style="width: 100%;">
+      </label>
+    </p>
+
+    <p>
+      <label>Bio:<br>
+        <textarea name="bio_text" rows="4" style="width: 100%;">{{ profile.bio_text }}</textarea>
+      </label>
+    </p>
+
+    <button type="submit">Save changes</button>
+    <a href="{% url 'mini_insta:show_profile' profile.pk %}">Cancel</a>
+  </form>
+{% endblock %}
