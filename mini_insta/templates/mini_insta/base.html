@@ -8,7 +8,7 @@
 <header>
     <h1>Mini Insta</h1>
     <nav>
-        <a href="{% url 'profile_list' %}">All Profiles</a>
+        <a href="{% url 'mini_insta:profile_list' %}">All Profiles</a>
     </nav>
     <hr>
 </header>
@@ -19,8 +19,24 @@
 <footer>
     <hr>
     <p>Mini Insta – CS412</p>
-    <a href="{% url 'profile_list' %}">Back to All Profiles</a>
+    <a href="{% url 'mini_insta:profile_list' %}">Back to All Profiles</a>
 </footer>
 
 </body>
+{% if user.is_authenticated %}
+
+<p>
+Logged in as {{ user.username }}
+<form method="post" action="{% url 'mini_insta:logout' %}">
+{% csrf_token %}
+<button type="submit">Logout</button>
+</form>
+</p>
+
+{% else %}
+
+<a href="{% url 'mini_insta:login' %}">Login</a>
+<a href="{% url 'mini_insta:create_profile' %}">Create Profile</a>
+
+{% endif %}
 </html>
