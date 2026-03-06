@@ -1,0 +1,1 @@
+https://github.com/kisss04/CS412/edit/main/django_project/githuburl.txt
