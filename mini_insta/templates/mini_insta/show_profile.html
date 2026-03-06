@@ -19,18 +19,48 @@
 </div>
 
 <p style="margin-top: 1rem;">
-  <a href="{% url 'mini_insta:edit_profile' profile.pk %}">Edit profile</a> |
-  <a href="{% url 'mini_insta:add_post' profile.pk %}">+ Add post</a> |
+  <a href="{% url 'mini_insta:edit_profile' %}">Edit profile</a> |
+  <a href="{% url 'mini_insta:add_post' %}">+ Add post</a> |
   <a href="{% url 'mini_insta:profile_list' %}">← Back to All Profiles</a>
 </p>
 
+{% if request.user.is_authenticated and profile.user != request.user %}
+    {% if request.user.profile in profile.followers.all %}
+        <form action="{% url 'mini_insta:delete_follow' profile.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Unfollow</button>
+        </form>
+    {% else %}
+        <form action="{% url 'mini_insta:follow_profile' profile.pk %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Follow</button>
+        </form>
+    {% endif %}
+{% endif %}
+
 <h3>Posts</h3>
+
 {% with posts=profile.get_all_posts %}
   {% if posts %}
     <ul>
       {% for post in posts %}
         <li style="margin: 1rem 0; list-style: none; border-bottom: 1px solid #ccc; padding-bottom: 1rem;">
+
           <strong>{{ post.timestamp }}</strong><br>
+
+          {% if request.user.is_authenticated and post.profile.user != request.user %}
+              {% if post.liked_by_user %}
+                  <form action="{% url 'mini_insta:delete_like' post.pk %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit">Unlike ❤️</button>
+                  </form>
+              {% else %}
+                  <form action="{% url 'mini_insta:like_post' post.pk %}" method="post">
+                      {% csrf_token %}
+                      <button type="submit">Like 🤍</button>
+                  </form>
+              {% endif %}
+          {% endif %}
 
           {% for photo in post.get_all_photos %}
             {% if photo.image_file %}
@@ -53,6 +83,7 @@
               </button>
             </form>
           </div>
+
         </li>
       {% endfor %}
     </ul>

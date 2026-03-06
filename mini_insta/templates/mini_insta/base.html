@@ -23,4 +23,20 @@
 </footer>
 
 </body>
+{% if user.is_authenticated %}
+
+<p>
+Logged in as {{ user.username }}
+<form method="post" action="{% url 'mini_insta:logout' %}">
+{% csrf_token %}
+<button type="submit">Logout</button>
+</form>
+</p>
+
+{% else %}
+
+<a href="{% url 'mini_insta:login' %}">Login</a>
+<a href="{% url 'mini_insta:create_profile' %}">Create Profile</a>
+
+{% endif %}
 </html>

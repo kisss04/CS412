@@ -1,23 +1,22 @@
-from django.db import models
 from django.urls import reverse
-# Create your models here.
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models import Q
+
 
 class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+
     username = models.CharField(max_length=50, unique=True)
     display_name = models.CharField(max_length=100)
-    profile_image_url = models.URLField()
+    profile_image_url = models.URLField(blank=True)
     bio_text = models.TextField(blank=True)
-    join_date = models.DateField()
 
     def __str__(self):
         return self.username
 
     def get_all_posts(self):
-        return Post.objects.filter(profile=self).order_by('-timestamp') 
-
-
-
+        return Post.objects.filter(profile=self).order_by('-timestamp')
 
 
 class Post(models.Model):
@@ -50,3 +49,16 @@ class Photo(models.Model):
         return f"Photo for Post {self.post.pk}"
 
 
+class Follow(models.Model):
+    follower = models.ForeignKey(Profile, related_name="following_set", on_delete=models.CASCADE)
+    following = models.ForeignKey(Profile, related_name="followers_set", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.follower} follows {self.following}"
+
+class Like(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.profile} likes Post {self.post.pk}"
