@@ -1,0 +1,36 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Edit Post #{{ post.pk }} for @{{ post.profile.username }}</h2>
+
+<p><a href="{% url 'show_profile' post.profile.pk %}">← Back to Profile</a> | <a href="{% url 'profile_list' %}">Home</a></p>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <p>
+    <label>Update Image(s):<br>
+      <input type="file" name="files" multiple>
+    </label>
+  </p>
+
+  {% for photo in post.get_all_photos %}
+    <p>
+      {% if photo.image_file %}
+        Current file: <img src="{{ photo.image_file.url }}" width="100">
+      {% else %}
+        Current URL: {{ photo.image_url }}
+      {% endif %}
+    </p>
+  {% endfor %}
+
+  <p>
+    <label>Caption:<br>
+      <textarea name="caption" rows="3" style="width:100%;">{{ post.caption }}</textarea>
+    </label>
+  </p>
+
+  <button type="submit">Save changes</button>
+  <a href="{% url 'show_profile' post.profile.pk %}">Cancel</a>
+</form>
+{% endblock %}
