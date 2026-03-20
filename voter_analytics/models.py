@@ -1,6 +1,6 @@
 import csv
 from datetime import datetime
-from django.db import models  # keep this
+from django.db import models  
 
 class Voter(models.Model):
     first_name = models.CharField(max_length=100)
@@ -9,8 +9,8 @@ class Voter(models.Model):
     street_name = models.CharField(max_length=200)
     apartment_number = models.CharField(max_length=20, blank=True, null=True)
     zip_code = models.CharField(max_length=10)
-    date_of_birth = models.DateField(null=True)           # allow nulls
-    date_of_registration = models.DateField(null=True)   # allow nulls
+    date_of_birth = models.DateField(null=True)          
+    date_of_registration = models.DateField(null=True)   
     party_affiliation = models.CharField(max_length=2)
     precinct_number = models.IntegerField()
     v20state = models.BooleanField()
@@ -32,7 +32,7 @@ def load_data():
 
         for row in reader:
 
-            # Handle dates safely
+            
             dob_str = row['Date of Birth']
             reg_str = row['Date of Registration']
 
@@ -55,7 +55,7 @@ def load_data():
                 except (ValueError, TypeError):
                     return default
 
-            Voter.objects.create(
+            Voter.objects.create(  # type: ignore[attr-defined]
                 first_name=row['First Name'],
                 last_name=row['Last Name'],
                 street_number=row['Residential Address - Street Number'],

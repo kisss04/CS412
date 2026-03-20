@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voter List</title>
+</head>
+<body>
+    <h1>Voter Records</h1>
+    <p>
+        <a href="/voter_analytics/">Voter Home</a> |
+        <a href="{% url 'graphs' %}">Graphs</a> |
+        <a href="/">Quotes Home</a>
+    </p>
+
+    <h2>Filter Voters</h2>
+    <form method="get">
+        <label>Party:
+            <select name="party">
+                <option value="">Any</option>
+                {% for p in party_choices %}
+                    <option value="{{ p }}" {% if selected_party == p %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Min Birth Year:
+            <select name="min_year">
+                <option value="">Any</option>
+                {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_min_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Max Birth Year:
+            <select name="max_year">
+                <option value="">Any</option>
+                {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_max_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Voter Score:
+            <select name="score">
+                <option value="">Any</option>
+                {% for s in score_choices %}
+                    <option value="{{ s }}" {% if selected_score == s|stringformat:"s" %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div>
+            <label><input type="checkbox" name="v20state" {% if selected_v20state %}checked{% endif %}> Voted 2020 State</label>
+            <label><input type="checkbox" name="v21town" {% if selected_v21town %}checked{% endif %}> Voted 2021 Town</label>
+            <label><input type="checkbox" name="v21primary" {% if selected_v21primary %}checked{% endif %}> Voted 2021 Primary</label>
+            <label><input type="checkbox" name="v22general" {% if selected_v22general %}checked{% endif %}> Voted 2022 General</label>
+            <label><input type="checkbox" name="v23town" {% if selected_v23town %}checked{% endif %}> Voted 2023 Town</label>
+        </div>
+
+        <button type="submit">Apply Filters</button>
+        <a href="{% url 'voters' %}">Clear</a>
+    </form>
+
+    <h2>Results</h2>
+    <p>Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ paginator.count }}</p>
+    <ul>
+        {% for voter in voters %}
+            <li>
+                <a href="{% url 'voter' voter.pk %}">
+                    {{ voter.first_name }} {{ voter.last_name }}
+                </a>
+                — {{ voter.street_number }} {{ voter.street_name }},
+                {% if voter.apartment_number %}Apt {{ voter.apartment_number }}, {% endif %}
+                {{ voter.zip_code }}
+                — DOB: {{ voter.date_of_birth }}
+                — Party: {{ voter.party_affiliation }}
+                — Score: {{ voter.voter_score }}
+            </li>
+        {% empty %}
+            <li>No voters found.</li>
+        {% endfor %}
+    </ul>
+
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?{{ query_string }}&page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?{{ query_string }}&page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
