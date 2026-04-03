@@ -1,0 +1,9 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+
+<h2>You have logged out</h2>
+
+<form method="post" action="{% url 'mini_insta:logout' %}">
+
+{% endblock %}

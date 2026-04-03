@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voter Graphs</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Voter Analytics Graphs</h1>
+    <p>
+        <a href="{% url 'voters' %}">Voter list</a> |
+        <a href="{% url 'graphs' %}">Graphs Home</a>
+    </p>
+
+    <h2>Filter Voters</h2>
+    <form method="get">
+        <label>Party:
+            <select name="party">
+                <option value="">Any</option>
+                {% for p in party_choices %}
+                    <option value="{{ p }}" {% if selected_party == p %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Min Birth Year:
+            <select name="min_year">
+                <option value="">Any</option>
+                {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_min_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Max Birth Year:
+            <select name="max_year">
+                <option value="">Any</option>
+                {% for y in year_choices %}
+                    <option value="{{ y }}" {% if selected_max_year == y|stringformat:"s" %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Voter Score:
+            <select name="score">
+                <option value="">Any</option>
+                {% for s in score_choices %}
+                    <option value="{{ s }}" {% if selected_score == s|stringformat:"s" %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <div>
+            <label><input type="checkbox" name="v20state" {% if selected_v20state %}checked{% endif %}> Voted 2020 State</label>
+            <label><input type="checkbox" name="v21town" {% if selected_v21town %}checked{% endif %}> Voted 2021 Town</label>
+            <label><input type="checkbox" name="v21primary" {% if selected_v21primary %}checked{% endif %}> Voted 2021 Primary</label>
+            <label><input type="checkbox" name="v22general" {% if selected_v22general %}checked{% endif %}> Voted 2022 General</label>
+            <label><input type="checkbox" name="v23town" {% if selected_v23town %}checked{% endif %}> Voted 2023 Town</label>
+        </div>
+
+        <button type="submit">Apply Filters</button>
+        <a href="{% url 'graphs' %}">Clear</a>
+    </form>
+
+    <h2>Distribution by Year of Birth</h2>
+    {{ birth_chart|safe }}
+
+    <h2>Distribution by Party Affiliation</h2>
+    {{ party_chart|safe }}
+
+    <h2>Participation by Election</h2>
+    {{ election_chart|safe }}
+</body>
+</html>
