@@ -4,8 +4,15 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 from .views import ProfileDetailView, ProfileListView, CreateProfileView
+from . import api_views
 
 urlpatterns = [
+    path('api/login/', api_views.LoginView.as_view(), name='api_login'),
+    path('api/profiles/', api_views.ProfileListView.as_view(), name='api_profiles'),
+    path('api/profiles/<int:pk>/', api_views.ProfileDetailView.as_view(), name='api_profile_detail'),
+    path('api/profiles/<int:pk>/posts/', api_views.ProfilePostsView.as_view(), name='api_profile_posts'),
+    path('api/profiles/<int:pk>/feed/', api_views.FeedView.as_view(), name='api_feed'),
+    path('api/posts/', api_views.PostCreateView.as_view(), name='api_post_create'),
 
     path("", ProfileListView.as_view(), name="profile_list"),
 

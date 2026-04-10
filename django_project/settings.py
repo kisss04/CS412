@@ -18,7 +18,7 @@ SECRET_KEY = "django-insecure-mnwa6$_#$b5$96*o1+#1)3@&ot!9vxluhtly5%4gsz^@88&8y)
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -34,9 +34,20 @@ INSTALLED_APPS = [
     "voter_analytics", 
     "jokesapp",
     "rest_framework",
+    "rest_framework.authtoken",
 
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
 
+
+MINI_INSTA_API_REQUIRE_AUTH = True
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -119,7 +130,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL= "media/"  # note: no leading slash!
+MEDIA_URL = '/media/'
 
 import socket
 CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
