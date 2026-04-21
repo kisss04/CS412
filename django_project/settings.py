@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     "quotes", # added for assignment
     "restaurant", # added for assignment
     "mini_insta",
-    "voter_analytics", 
+    "project",
+    "voter_analytics",
     "jokesapp",
     "rest_framework",
     "rest_framework.authtoken",
