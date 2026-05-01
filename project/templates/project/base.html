@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}RecordRoom{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'project/styles.css' %}">
+</head>
+<body>
+  <div class="sparkle-bg"></div>
+  <header class="site-header">
+    <h1><a href="{% url 'project:home' %}">RecordRoom</a></h1>
+    <p class="tagline">customize your vibe • rate your favs • discover artists<span class="blink-cursor">_</span></p>
+    <div class="header-meta">
+      <span class="hit-counter">Visitors: 004821</span>
+      <div class="marquee"><span>NOW PLAYING: TOP RATED ALBUMS ★ RATE SONGS ★ BUILD YOUR PROFILE ★</span></div>
+    </div>
+    <nav>
+      <a href="{% url 'project:home' %}">Discover</a>
+      <a href="{% url 'project:review_list' %}">Reviews</a>
+      <a href="{% url 'project:review_hub' %}">Add Review</a>
+      <a href="{% url 'project:my_profile' %}">Profile</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li class="message message-{{ message.level_tag }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="now-playing-bar">NOW PLAYING // RECORDROOM // RATE • LIKE • DISCOVER</footer>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends "project/base.html" %}
+
+{% block title %}Albums | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Albums</h2>
+
+  <form method="get" class="filter-form">
+    {{ filter_form.genre.label_tag }} {{ filter_form.genre }}
+    {{ filter_form.year.label_tag }} {{ filter_form.year }}
+    <button type="submit">Filter</button>
+    <a href="{% url 'project:album_list' %}">Clear</a>
+  </form>
+
+  <ul class="list-card">
+    {% for album in albums %}
+      <li>
+        {% if album.display_cover_url %}
+          <img src="{{ album.display_cover_url }}" alt="{{ album.title }} cover" class="cover-thumb">
+          <br>
+        {% else %}
+          <div class="cover-placeholder thumb">No Cover</div>
+        {% endif %}
+        <a href="{% url 'project:album_detail' album.pk %}">{{ album.title }}</a>
+        — {{ album.artist.name }} ({{ album.year_released }})
+      </li>
+    {% empty %}
+      <li>No albums found for this filter.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

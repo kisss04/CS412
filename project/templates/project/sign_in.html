@@ -1,0 +1,22 @@
+{% extends "project/base.html" %}
+
+{% block title %}Sign In | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Sign In</h2>
+  <p class="muted">Not signed in yet? Enter your username below to open your RecordRoom profile on this browser.</p>
+  <p>Use a username to post reviews and likes. New usernames create a profile automatically.</p>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next_url }}">
+    <label for="username">Username</label>
+    <input id="username" name="username" required>
+    <label for="first_name">First name (optional for new profile)</label>
+    <input id="first_name" name="first_name">
+    <label for="last_name">Last name (optional for new profile)</label>
+    <input id="last_name" name="last_name">
+    <label for="email">Email (optional for new profile)</label>
+    <input id="email" name="email" type="email">
+    <button type="submit">Sign In</button>
+  </form>
+{% endblock %}

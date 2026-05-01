@@ -1,0 +1,21 @@
+{% extends "project/base.html" %}
+
+{% block title %}Delete Profile | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Delete profile</h2>
+  <p>
+    You are about to permanently delete the account for
+    <strong>{{ listener.username|default:listener }}</strong>.
+  </p>
+  <p class="muted">
+    This removes your listener profile, every review you wrote, and every like you gave.
+    This cannot be undone.
+  </p>
+  <form method="post" class="form-card">
+    {% csrf_token %}
+    <input type="hidden" name="confirm" value="DELETE">
+    <button type="submit" class="button-danger">Yes, delete my profile</button>
+    <a href="{% url 'project:my_profile' %}" class="cancel-delete-link">Cancel</a>
+  </form>
+{% endblock %}

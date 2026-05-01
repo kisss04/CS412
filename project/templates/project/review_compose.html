@@ -1,0 +1,66 @@
+{% extends "project/base.html" %}
+
+{% block title %}Review {{ selected_album.title }} | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Leave a Review</h2>
+
+  <section class="form-panel">
+    <div class="hero-cover-wrap">
+      {% if selected_album.display_cover_url %}
+        <img src="{{ selected_album.display_cover_url }}" alt="{{ selected_album.title }} cover" class="cover-image hero-cover">
+      {% else %}
+        <div class="cover-placeholder hero-cover">No Cover</div>
+      {% endif %}
+    </div>
+    <p class="hero-caption">
+      <strong>{{ selected_album.title }}</strong> — {{ selected_album.artist.name }}
+    </p>
+
+    {% if not selected_tracks %}
+      <p class="muted">Song list unavailable for this album. You can still review the full album.</p>
+    {% endif %}
+
+    <hr class="review-divider">
+    <h3>Leave Your Review</h3>
+
+    <form method="post" class="form-card review-form">
+      {% csrf_token %}
+      <p class="form-full"><strong>Posting as:</strong> {{ current_listener.username|default:current_listener }}</p>
+
+      <label for="review_target">Review type</label>
+      <select id="review_target" name="review_target">
+        <option value="album">Review full album</option>
+        <option value="song">Review a song</option>
+      </select>
+
+      <label for="track_title">Song (required for Song review)</label>
+      <select id="track_title" name="track_title">
+        <option value="">Select a song</option>
+        {% for track in selected_tracks %}
+          <option value="{{ track }}">{{ track }}</option>
+        {% endfor %}
+      </select>
+      <label for="manual_track_title">Or type song name if not listed</label>
+      <input id="manual_track_title" name="manual_track_title" placeholder="Enter song title">
+
+      <fieldset class="stars stars-10 form-full">
+        <legend>Rating (1–10 stars)</legend>
+        <input type="radio" id="compose_star10" name="rating" value="10"><label for="compose_star10" title="10">★</label>
+        <input type="radio" id="compose_star9" name="rating" value="9"><label for="compose_star9" title="9">★</label>
+        <input type="radio" id="compose_star8" name="rating" value="8"><label for="compose_star8" title="8">★</label>
+        <input type="radio" id="compose_star7" name="rating" value="7"><label for="compose_star7" title="7">★</label>
+        <input type="radio" id="compose_star6" name="rating" value="6"><label for="compose_star6" title="6">★</label>
+        <input type="radio" id="compose_star5" name="rating" value="5" checked><label for="compose_star5" title="5">★</label>
+        <input type="radio" id="compose_star4" name="rating" value="4"><label for="compose_star4" title="4">★</label>
+        <input type="radio" id="compose_star3" name="rating" value="3"><label for="compose_star3" title="3">★</label>
+        <input type="radio" id="compose_star2" name="rating" value="2"><label for="compose_star2" title="2">★</label>
+        <input type="radio" id="compose_star1" name="rating" value="1"><label for="compose_star1" title="1">★</label>
+      </fieldset>
+
+      <label for="review_text" class="form-full">Short description</label>
+      <textarea id="review_text" name="review_text" rows="3" maxlength="250" placeholder="What did you like or not like?" required class="form-full"></textarea>
+      <button type="submit" class="form-full">Post Review</button>
+    </form>
+  </section>
+{% endblock %}

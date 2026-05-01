@@ -1,0 +1,29 @@
+{% extends "project/base.html" %}
+
+{% block title %}Edit Profile | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Edit Listener Profile</h2>
+  <p>Update username, profile picture URL, and short bio.</p>
+  <form method="post" class="form-card review-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <p class="form-full">
+        {% if field.errors %}<span class="field-error">{{ field.errors }}</span>{% endif %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% if field.help_text %}<span class="muted"><br>{{ field.help_text }}</span>{% endif %}
+        {{ field }}
+        {% if field.name == "profile_image_url" and field.value %}
+          <span class="muted"><br>Preview:</span><br>
+          <img src="{{ field.value }}" alt="" class="profile-image" referrerpolicy="no-referrer" loading="lazy">
+        {% endif %}
+      </p>
+    {% endfor %}
+    <button type="submit" class="form-full">Save Profile</button>
+  </form>
+  {% if is_own_profile %}
+    <p class="form-full" style="margin-top: 1.25rem;">
+      <a href="{% url 'project:my_profile_delete' %}" class="danger-link">Delete profile…</a>
+    </p>
+  {% endif %}
+{% endblock %}

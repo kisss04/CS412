@@ -1,0 +1,17 @@
+{% extends "project/base.html" %}
+
+{% block title %}Listeners | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Listeners</h2>
+  <ul>
+    {% for listener in listeners %}
+      <li>
+        <a href="{% url 'project:listener_detail' listener.pk %}">{{ listener.first_name }} {{ listener.last_name }}</a>
+        — {{ listener.email }}
+      </li>
+    {% empty %}
+      <li>No listeners found.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "project/base.html" %}
+
+{% block title %}Artists | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Artists</h2>
+  <ul class="list-card">
+    {% for artist in artists %}
+      <li>
+        <a href="{% url 'project:artist_detail' artist.pk %}">{{ artist.name }}</a>
+        — {{ artist.genre }}
+        {% with artist.albums.first as first_album %}
+          {% if first_album and first_album.display_cover_url %}
+            <br>
+            <img src="{{ first_album.display_cover_url }}" alt="{{ first_album.title }} cover" class="cover-thumb">
+          {% endif %}
+        {% endwith %}
+      </li>
+    {% empty %}
+      <li>No artists available.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

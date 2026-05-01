@@ -1,0 +1,38 @@
+{% extends "project/base.html" %}
+
+{% block title %}MusicBrainz Lookup | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>MusicBrainz Artist Lookup</h2>
+  <p>Search external artist metadata to enrich your local records.</p>
+
+  <form method="get" class="filter-form">
+    {{ form.query.label_tag }} {{ form.query }}
+    <button type="submit">Search</button>
+  </form>
+
+  {% if error %}
+    <p class="error">{{ error }}</p>
+  {% endif %}
+
+  <ul class="list-card">
+    {% for artist in results %}
+      <li>
+        <strong>{{ artist.name }}</strong>
+        <br>
+        Country: {{ artist.country }} | Type: {{ artist.type }} | Match: {{ artist.score }}%
+        <br>
+        MBID: <code>{{ artist.mbid }}</code>
+        <form method="post" style="margin-top: 0.4rem;">
+          {% csrf_token %}
+          <input type="hidden" name="artist_name" value="{{ artist.name }}">
+          <input type="hidden" name="artist_country" value="{{ artist.country }}">
+          <input type="hidden" name="artist_mbid" value="{{ artist.mbid }}">
+          <button type="submit">Import artist + albums</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>Search for an artist to see MusicBrainz results.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

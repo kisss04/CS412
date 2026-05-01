@@ -1,0 +1,64 @@
+{% extends "project/base.html" %}
+
+{% block title %}{{ artist.name }} | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>{{ artist.name }}</h2>
+  <p><strong>Genre:</strong> {{ artist.genre }}</p>
+  <p><strong>Country:</strong> {{ artist.origin_country }}</p>
+  <p>{{ artist.bio }}</p>
+
+  <h3>Albums in RecordRoom</h3>
+  <p class="muted">Everything saved under this artist in your database (newest first).</p>
+  <ul class="list-card artist-album-list">
+    {% for album in albums %}
+      <li class="artist-album-row">
+        {% if album.display_cover_url %}
+          <a href="{% url 'project:album_detail' album.pk %}" class="artist-album-thumb">
+            <img src="{{ album.display_cover_url }}" alt="" class="cover-thumb" loading="lazy" referrerpolicy="no-referrer">
+          </a>
+        {% else %}
+          <span class="cover-placeholder thumb" aria-hidden="true">—</span>
+        {% endif %}
+        <span class="artist-album-meta">
+          <a href="{% url 'project:album_detail' album.pk %}">{{ album.title }}</a>
+          ({{ album.year_released }})
+        </span>
+      </li>
+    {% empty %}
+      <li>No albums listed for this artist yet.</li>
+    {% endfor %}
+  </ul>
+
+  {% if mb_discography %}
+    <h3>Discography (MusicBrainz)</h3>
+    <p class="muted">
+      Up to 100 releases matched to “{{ artist.name }}” on MusicBrainz.
+      Titles already in RecordRoom link to your album page; others you can add from <a href="{% url 'project:review_hub' %}">Add Review</a>.
+    </p>
+    <ul class="list-card artist-album-list mb-discography">
+      {% for row in mb_discography %}
+        <li class="artist-album-row">
+          {% if row.external_cover_url %}
+            <span class="artist-album-thumb">
+              <img src="{{ row.external_cover_url }}" alt="" class="cover-thumb" loading="lazy" referrerpolicy="no-referrer">
+            </span>
+          {% else %}
+            <span class="cover-placeholder thumb" aria-hidden="true">—</span>
+          {% endif %}
+          <span class="artist-album-meta">
+            {% if row.local_album %}
+              <a href="{% url 'project:album_detail' row.local_album.pk %}">{{ row.title }}</a>
+              <span class="muted">(in RecordRoom)</span>
+            {% else %}
+              {{ row.title }}
+            {% endif %}
+            <span class="muted">({{ row.year_released }})</span>
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% elif mbid_match == "" %}
+    <p class="muted">No MusicBrainz artist match for this name right now — only local albums are shown above.</p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "project/base.html" %}
+
+{% block title %}{{ listener }} | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>{{ listener.username|default:listener.first_name }}</h2>
+  {% if listener.profile_image_src %}
+    <img
+      src="{{ listener.profile_image_src }}"
+      alt="{{ listener }} profile picture"
+      class="profile-image"
+      referrerpolicy="no-referrer"
+      loading="lazy"
+    >
+  {% endif %}
+  <p><strong>Name:</strong> {{ listener.first_name }} {{ listener.last_name }}</p>
+  <p><strong>Email:</strong> {{ listener.email }}</p>
+  <p><strong>Joined:</strong> {{ listener.date_joined }}</p>
+  {% if listener.bio %}
+    <p><strong>Bio:</strong> {{ listener.bio }}</p>
+  {% endif %}
+  <p>
+    <strong>Stats:</strong>
+    {{ reviews|length }} reviews written •
+    {{ likes_received_count }} likes received •
+    {{ likes_given_count }} likes given
+  </p>
+  {% if is_own_profile %}
+    <p class="profile-actions">
+      <a href="{% url 'project:listener_profile_edit' listener.pk %}">Edit profile</a>
+      <span class="muted"> · </span>
+      <a href="{% url 'project:my_profile_delete' %}" class="danger-link">Delete profile…</a>
+      <span class="muted"> · </span>
+      <form method="post" action="{% url 'project:sign_out' %}" class="inline-signout-form">
+        {% csrf_token %}
+        <button type="submit" class="link-like-button">Sign out</button>
+      </form>
+    </p>
+  {% endif %}
+
+  <h3>Reviews by this listener</h3>
+  <ul class="list-card">
+    {% for review in reviews %}
+      <li>
+        <a href="{% url 'project:album_detail' review.album.pk %}">{{ review.album.title }}</a>
+        — {{ review.rating }}/10
+        <br>
+        {% if review.review_target == "song" and review.track_title %}
+          <em>Song review: {{ review.track_title }}</em><br>
+        {% endif %}
+        {{ review.review_text }}
+        <br>
+        Likes: {{ review.likes.count }}
+        <form method="post" action="{% url 'project:review_like' review.pk %}" style="margin-top: 0.3rem;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit">Like / Unlike</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>No reviews by this listener yet.</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Who liked this listener</h3>
+  <ul class="list-card">
+    {% for like in likes_received %}
+      <li>
+        <a href="{% url 'project:listener_detail' like.listener.pk %}">{{ like.listener }}</a>
+        liked review on <a href="{% url 'project:album_detail' like.review.album.pk %}">{{ like.review.album.title }}</a>
+      </li>
+    {% empty %}
+      <li>No likes received yet.</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Who this listener liked</h3>
+  <ul class="list-card">
+    {% for like in likes_given %}
+      <li>
+        Liked <a href="{% url 'project:listener_detail' like.review.listener.pk %}">{{ like.review.listener }}</a>'s review on
+        <a href="{% url 'project:album_detail' like.review.album.pk %}">{{ like.review.album.title }}</a>
+      </li>
+    {% empty %}
+      <li>No likes given yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

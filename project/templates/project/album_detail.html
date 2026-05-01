@@ -1,0 +1,35 @@
+{% extends "project/base.html" %}
+
+{% block title %}{{ album.title }} | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>{{ album.title }}</h2>
+  <p><strong>Artist:</strong> <a href="{% url 'project:artist_detail' album.artist.pk %}">{{ album.artist.name }}</a></p>
+  <p><strong>Year:</strong> {{ album.year_released }}</p>
+  <p><strong>Genre:</strong> {{ album.genre }}</p>
+  {% if album.display_cover_url %}
+    <img src="{{ album.display_cover_url }}" alt="{{ album.title }} cover" class="cover-image">
+  {% endif %}
+
+  <h3>Reviews</h3>
+  <ul class="list-card">
+    {% for review in album.reviews.all %}
+      <li>
+        <a href="{% url 'project:listener_detail' review.listener.pk %}">{{ review.listener }}</a>:
+        {{ review.rating }}/10 — {{ review.review_text }}
+        {% if review.review_target == "song" and review.track_title %}
+          <br><em>Song review: {{ review.track_title }}</em>
+        {% endif %}
+        <br>
+        Likes: {{ review.likes.count }}
+        <form method="post" action="{% url 'project:review_like' review.pk %}" style="margin-top: 0.3rem;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit">Like / Unlike</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>No reviews yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "project/base.html" %}
+
+{% block title %}Reviews | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>All Reviews</h2>
+  <p><a href="{% url 'project:review_hub' %}">Add a new review</a></p>
+  <ul class="review-list">
+    {% for review in reviews %}
+      <li class="review-list-item">
+        <a href="{% url 'project:album_detail' review.album.pk %}" class="review-list-thumb">
+          {% if review.album.display_cover_url %}
+            <img src="{{ review.album.display_cover_url }}" alt="{{ review.album.title }} cover" class="cover-thumb">
+          {% else %}
+            <div class="cover-placeholder thumb" aria-hidden="true">No Cover</div>
+          {% endif %}
+        </a>
+        <div class="review-list-body">
+          <strong>{{ review.album.title }}</strong> by {{ review.listener }}:
+          {{ review.rating }}/10
+          <br>
+          {% if review.track_title %}
+            <em>Song review: {{ review.track_title }}</em><br>
+          {% elif review.review_target == "song" %}
+            <em>Song review</em><br>
+          {% else %}
+            <em>Album review</em><br>
+          {% endif %}
+          {{ review.review_text }}
+          <br>
+          Likes: {{ review.likes.count }}
+          <form method="post" action="{% url 'project:review_like' review.pk %}" style="margin-top: 0.3rem;">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit">Like / Unlike</button>
+          </form>
+          <br>
+          <a href="{% url 'project:review_edit' review.pk %}">Edit</a>
+          |
+          <a href="{% url 'project:review_delete' review.pk %}">Delete</a>
+        </div>
+      </li>
+    {% empty %}
+      <li>No reviews yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

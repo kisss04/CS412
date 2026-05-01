@@ -1,0 +1,88 @@
+{% extends "project/base.html" %}
+
+{% block title %}Reviews | RecordRoom{% endblock %}
+
+{% block content %}
+  <h2>Review Albums</h2>
+  <p>Search an album, pick it, then rate with 1–10 stars and a short description.</p>
+  <p class="muted">You can browse this page without signing in. Posting a review requires sign-in.</p>
+
+  <form method="get" class="filter-form">
+    <label for="q">Search by album or artist</label>
+    <input id="q" name="q" value="{{ query }}" placeholder="ex: Midnights, Beyonce">
+    <button type="submit">Search</button>
+  </form>
+
+  <div class="album-gallery">
+    {% for album in albums %}
+      <article class="album-tile">
+        {% if album.display_cover_url %}
+          <img src="{{ album.display_cover_url }}" alt="{{ album.title }} cover" class="cover-image">
+        {% else %}
+          <div class="cover-placeholder">No Cover</div>
+        {% endif %}
+        <h3>{{ album.title }}</h3>
+        <p>{{ album.artist.name }}</p>
+        <p><a href="{% url 'project:review_compose' album.pk %}">Review this album</a></p>
+      </article>
+    {% empty %}
+      <p>No albums match that search yet.</p>
+    {% endfor %}
+  </div>
+
+  {% if query %}
+    <h3>MusicBrainz Results</h3>
+    <p>Not seeing your album above? Import one result below and review it instantly.</p>
+    <div class="album-gallery">
+      {% for ext in external_albums %}
+        <article class="album-tile">
+          {% if ext.external_cover_url %}
+            <img src="{{ ext.external_cover_url }}" alt="{{ ext.title }} cover" class="cover-image">
+          {% else %}
+            <div class="cover-placeholder">No Cover</div>
+          {% endif %}
+          <h3>{{ ext.title }}</h3>
+          <p>{{ ext.artist_name }}{% if ext.year_released %} ({{ ext.year_released }}){% endif %}</p>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="import_album">
+            <input type="hidden" name="artist_name" value="{{ ext.artist_name }}">
+            <input type="hidden" name="artist_country" value="{{ ext.artist_country }}">
+            <input type="hidden" name="album_title" value="{{ ext.title }}">
+            <input type="hidden" name="year_released" value="{{ ext.year_released }}">
+            <input type="hidden" name="rg_mbid" value="{{ ext.rg_mbid }}">
+            <input type="hidden" name="external_cover_url" value="{{ ext.external_cover_url }}">
+            <button type="submit">Import & Review</button>
+          </form>
+        </article>
+      {% empty %}
+        <p>No MusicBrainz matches found for this query.</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <h3>Latest Reviews</h3>
+  <ul class="list-card">
+    {% for review in recent_reviews %}
+      <li>
+        <strong>{{ review.album.title }}</strong> by
+        <a href="{% url 'project:listener_detail' review.listener.pk %}">{{ review.listener }}</a>
+        — {{ review.rating }}/10
+        <br>
+        {% if review.review_target == "song" and review.track_title %}
+          <em>Song review: {{ review.track_title }}</em><br>
+        {% endif %}
+        {{ review.review_text }}
+        <br>
+        Likes: {{ review.likes.count }}
+        <form method="post" action="{% url 'project:review_like' review.pk %}" style="margin-top: 0.3rem;">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button type="submit">Like / Unlike</button>
+        </form>
+      </li>
+    {% empty %}
+      <li>No reviews yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
